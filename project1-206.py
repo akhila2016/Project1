@@ -1,22 +1,25 @@
 import os
 import filecmp
+import csv
+import operator
 from dateutil.relativedelta import *
 from datetime import date
 
 
 def getData(file):
-# get a list of dictionary objects from the file
-#Input: file name
-#Ouput: return a list of dictionary objects where
-#the keys are from the first row in the data. and the values are each of the other rows
-
+	inFile = csv.DictReader(open(file, 'r'))
+	lines = []
+	for row in inFile:
+		lines.append(row)
+	return (lines)
 	pass
 
 def mySort(data,col):
 # Sort based on key/column
 #Input: list of dictionaries and col (key) to sort on
 #Output: Return the first item in the sorted list as a string of just: firstName lastName
-
+	dataSorted = sorted(data, key = lambda i: i[col])
+	return (dataSorted[0]['First'] + " " + dataSorted[0]['Last'])
 	pass
 
 
@@ -26,7 +29,10 @@ def classSizes(data):
 # Output: Return a list of tuples sorted by the number of students in that class in
 # descending order
 # [('Senior', 26), ('Junior', 25), ('Freshman', 21), ('Sophomore', 18)]
-
+	size = {'Freshman':0, 'Sophomore':0, 'Junior':0, 'Senior':0} 
+	for row in data:
+		size[row['Class']] += 1
+	return sorted(size.items(), key = lambda x: x[1], reverse = True)
 	pass
 
 
@@ -34,17 +40,32 @@ def findMonth(a):
 # Find the most common birth month form this data
 # Input: list of dictionaries
 # Output: Return the month (1-12) that had the most births in the data
+	months = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0}
 
-	pass
+	for col in a:
+		line = col['DOB']
+		values = line.split('/')
+		month = int(values[0])
+		months[month] += 1
+	maxValueKey = max(months.items(), key = operator.itemgetter(1))[0]
+	return maxValueKey
+	pass 
 
 def mySortPrint(a,col,fileName):
 #Similar to mySort, but instead of returning single
 #Student, the sorted data is saved to a csv file.
-# as fist,last,email
+# as first,last,email
 #Input: list of dictionaries, col (key) to sort by and output file name
 #Output: No return value, but the file is written
-
-	pass
+	
+    csvfile = open(fileName, 'w')
+    dataSorted = sorted(a, key = lambda i: i[col])
+    for student in dataSorted:
+    	first = student['First']
+    	last = student['Last']
+    	email = student['Email'] 
+    	csvfile.write(first + ',' + last + ',' + email + '\n')
+    pass
 
 def findAge(a):
 # def findAge(a):
@@ -52,6 +73,18 @@ def findAge(a):
 # Output: Return the average age of the students and round that age to the nearest
 # integer.  You will need to work with the DOB and the current date to find the current
 # age in years.
+	currentDate = date.today()
+	total_age = 0
+	num_rows = 0
+	for col in a:
+		date_of_birth = col['DOB']
+		values = date_of_birth.split('/')
+		year = int(values[2])
+		age = currentDate.year - year
+		num_rows += 1
+		total_age += age
+	average_age = int(total_age/num_rows)
+	return average_age 
 
 	pass
 
@@ -77,7 +110,7 @@ def main():
 	total = 0
 	print("Read in Test data and store as a list of dictionaries")
 	data = getData('P1DataA.csv')
-	data2 = getData('P1DataB.csv')
+	data2 = getData('P1DataB2.csv')
 	total += test(type(data),type([]),50)
 
 	print()
@@ -115,3 +148,4 @@ def main():
 # Standard boilerplate to call the main() function that tests all your code
 if __name__ == '__main__':
     main()
+
