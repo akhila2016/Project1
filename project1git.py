@@ -29,7 +29,10 @@ def classSizes(data):
 # Output: Return a list of tuples sorted by the number of students in that class in
 # descending order
 # [('Senior', 26), ('Junior', 25), ('Freshman', 21), ('Sophomore', 18)]
-
+    size = {'Freshman':0, 'Sophomore':0, 'Junior':0, 'Senior':0}
+    for row in data:
+        size[row['Class']] += 1
+    return sorted(size.items(), key = lambda x: x[1], reverse = True)
 	pass
 
 
@@ -37,8 +40,15 @@ def findMonth(a):
 # Find the most common birth month form this data
 # Input: list of dictionaries
 # Output: Return the month (1-12) that had the most births in the data
-
-
+    months = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0}
+    
+    for col in a:
+        line = col['DOB']
+        values = line.split('/')
+        month = int(values[0])
+        months[month] += 1
+    maxValueKey = max(months.items(), key = operator.itemgetter(1))[0]
+    return maxValueKey
 	pass 
 
 def mySortPrint(a,col,fileName):
@@ -47,7 +57,7 @@ def mySortPrint(a,col,fileName):
 # as first,last,email
 #Input: list of dictionaries, col (key) to sort by and output file name
 #Output: No return value, but the file is written
-	
+
 
     pass
 
