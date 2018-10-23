@@ -33,7 +33,7 @@ def classSizes(data):
     for row in data:
         size[row['Class']] += 1
     return sorted(size.items(), key = lambda x: x[1], reverse = True)
-	pass
+    pass
 
 
 def findMonth(a):
@@ -49,7 +49,7 @@ def findMonth(a):
         months[month] += 1
     maxValueKey = max(months.items(), key = operator.itemgetter(1))[0]
     return maxValueKey
-	pass 
+    pass 
 
 def mySortPrint(a,col,fileName):
 #Similar to mySort, but instead of returning single
@@ -57,8 +57,13 @@ def mySortPrint(a,col,fileName):
 # as first,last,email
 #Input: list of dictionaries, col (key) to sort by and output file name
 #Output: No return value, but the file is written
-
-
+    csvfile = open(fileName, 'w')
+    dataSorted = sorted(a, key = lambda i: i[col])
+    for student in dataSorted:
+        first = student['First']
+        last = student['Last']
+        email = student['Email']
+        csvfile.write(first + ',' + last + ',' + email + '\n')
     pass
 
 def findAge(a):
@@ -67,7 +72,19 @@ def findAge(a):
 # Output: Return the average age of the students and round that age to the nearest
 # integer.  You will need to work with the DOB and the current date to find the current
 # age in years.
-	pass
+    currentDate = date.today()
+    total_age = 0
+    num_rows = 0
+    for col in a:
+        date_of_birth = col['DOB']
+        values = date_of_birth.split('/')
+        year = int(values[2])
+        age = currentDate.year - year
+        num_rows += 1
+        total_age += age
+    average_age = int(total_age/num_rows)
+    return average_age
+    pass
 
 
 ################################################################
